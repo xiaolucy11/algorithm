@@ -1,0 +1,257 @@
+package algorithm.medium5;
+
+import org.junit.Test;
+
+import java.util.*;
+
+/**
+ * Created by youlu on 2018/10/3.
+ */
+public class Solution423 {
+    public Map<String,Integer> map ;
+    public  void  init(){
+        map = new HashMap<>();
+        map.put("zero",0);
+        map.put("one",1);
+        map.put("two",2);
+        map.put("three",3);
+        map.put("four",4);
+        map.put("five",5);
+        map.put("six",6);
+        map.put("seven",7);
+        map.put("eight",8);
+        map.put("nine",9);
+    }
+
+    public int[] countChars(String string){
+        int[] str = new int[26];
+        for(int i = 0; i < string.length(); i++){
+            int v = (int)(string.charAt(i) - 'a');
+            str[v]++;
+        }
+
+        return  str;
+    }
+    public  boolean exist(int[] array, String str){
+        int[] strChar = countChars(str);
+
+        for(int i = 0;  i < 26; i++){
+            if(array[i] < strChar[i]){
+                return  false;
+            }
+        }
+
+        return true;
+    }
+
+    public  boolean isCompleted(int[] array){
+        for(int i = 0; i < 26;i++){
+            if(array[i] != 0){
+                return  false;
+            }
+        }
+
+        return  true;
+    }
+    public  int flag ;
+    public  void  search(int[] array, Map<String,Integer> map, List<Integer> list){
+        if(isCompleted(array)){
+            flag =  1;
+            return;
+        }
+
+        for(String key : map.keySet()){
+            if(exist(array, key)){
+                list.add(map.get(key));
+                for(int i = 0; i < key.length(); i++){
+                    int temp = (int)(key.charAt(i) - 'a');
+                    array[temp]--;
+                }
+                search(array, map, list);
+                if(flag == 1){
+                    return;
+                }else {
+                    list.remove(list.size() - 1);
+                    for(int i = 0; i < key.length(); i++){
+                        int value = (int)(key.charAt(i) - 'a');
+                        array[value]++;
+                    }
+                }
+            }
+        }
+
+        return;
+    }
+
+    public  void subNumberOfCharacters(int[] array, String str){
+        for(int i = 0; i < str.length(); i++){
+            int index = str.charAt(i) - 'a';
+            array[index]--;
+        }
+    }
+    public  void  preProcess(int[] array, List<Integer> list){
+        if(array['g' - 'a'] != 0){
+            int number = array['g' - 'a'];
+            String str = "eight";
+            while (number > 0){
+               subNumberOfCharacters(array, str);
+                list.add(8);
+                number--;
+            }
+        }
+
+
+        if(array['u' - 'a'] != 0){
+            int number = array['u' - 'a'];
+            String str = "four";
+            while (number > 0){
+                subNumberOfCharacters(array,str);
+                list.add(4);
+                number--;
+            }
+        }
+
+        if(array['w' - 'a'] != 0){
+            int number = array['w'-'a'];
+            String str = "two";
+            while (number > 0){
+                subNumberOfCharacters(array, str);
+                list.add(2);
+                number--;
+            }
+        }
+
+        if(array['x'- 'a'] != 0){
+            int number = array['x' - 'a'];
+            String str = "six";
+            while (number > 0){
+                subNumberOfCharacters(array, str);
+                list.add(6);
+                number--;
+            }
+        }
+
+
+        if(array['z' - 'a'] != 0) {
+            int number = array['z' - 'a'];
+            String str = "zero";
+            while (number > 0){
+                subNumberOfCharacters(array, str);
+                list.add(0);
+                number--;
+            }
+        }
+
+        if(array['t'-'a'] != 0){
+            String nextStr = "three";
+            int value = array['t'- 'a'];
+            while (value > 0){
+                subNumberOfCharacters(array,nextStr);
+                value--;
+                list.add(3);
+            }
+        }
+
+        if(array['f' - 'a'] != 0){
+            String nextStr = "five";
+            int value = array['f' - 'a'];
+            while (value > 0){
+                subNumberOfCharacters(array, nextStr);
+                value--;
+                list.add(5);
+            }
+        }
+
+        if(array['i' - 'a'] != 0){
+            String str = "nine";
+            int number = array['i'- 'a'];
+            while (number > 0){
+                subNumberOfCharacters(array, str);
+                number--;
+                list.add(9);
+            }
+        }
+
+        if(array['s' - 'a'] != 0){
+            String nextStr = "seven";
+            int value = array['s' - 'a'];
+            while (value > 0){
+                subNumberOfCharacters(array, nextStr);
+                value--;
+                list.add(7);
+            }
+        }
+        if(array['o' - 'a'] != 0){
+            String str = "one";
+            int number = array['o'-'a'];
+            while (number > 0){
+                subNumberOfCharacters(array, str);
+                number--;
+                list.add(1);
+            }
+        }
+    }
+
+    //Wrong solutin
+    public String originalDigits(String s){
+        int[] array = new int[26];
+        init();
+        flag = 0;
+        for(int i = 0; i < s.length(); i++){
+            int value = (int)(s.charAt(i) - 'a');
+            array[value]++;
+        }
+        List<Integer> list = new ArrayList<>();
+        preProcess(array, list);
+        search(array, map, list);
+        Collections.sort(list);
+        String result = "";
+        for(int i = 0; i < list.size(); i++){
+            result += Integer.toString(list.get(i));
+        }
+        return  result;
+    }
+
+    //Accepted ----32ms
+    public String originalDigits1(String s){
+        int[] array = new int[26];
+        init();
+        for(int i = 0; i < s.length(); i++){
+            int value = (int)(s.charAt(i) - 'a');
+            array[value]++;
+        }
+        List<Integer> list = new ArrayList<>();
+        preProcess(array,list);
+        Collections.sort(list);
+        StringBuilder result = new StringBuilder();
+        for(int i = 0; i < list.size();i++){
+           result.append(list.get(i));
+        }
+        return  result.toString();
+    }
+
+
+
+    @Test
+    public  void  test(){
+//        String s = "owoztneoer";
+//        String s = "fviefuro";
+        String s = "ertfsxvxttiorseenivsoiwosefeinoinwoioousiieihtfirrnioeenwiortw" +
+                "sefwnnniseoisontieiitnvsovthrenwfitfenoiwouwtrtnxneisieinovhuieenr" +
+                "veenoiuoireooieiuittefotnoeeftfsetooeniuvrsnvetwieetvoneeoiieeiiirhft" +
+                "nrntihenseveeorioriononnuhweixefoiotowxreossentetresvzoerfeonvhfoest" +
+                "veooxesintstvefewrifsneeexveefoxonvueituwoieefvofwrfistixeesooxoeweteor" +
+                "tfevtsuffohnfruiwitnuxexrevrhfenwenofnzfvsiofeneesoshoefxoefieiieeoueofo" +
+                "ivshvtrsoneenenwiexnifttfeoooetesnouewtneisfeenwiiwnvuntnwuesniffweeoretvif" +
+                "tseeexeoetzntefnfoxesfforvrwrrhrewtegwsnvinotonitvxeerwooeefswxxtfixenwfxioe" +
+                "vierefevinviwvxonfitouevwxnshiewuntwunniennvunvfnnxinovfsvohrresenffintfissstnrfwinsegrrnesentoitoieneiiinuenrtssgosetoufnniuesneseonesetnstiofieeosvoowooeueietrheiienstifweeueitioretiwefwvonsernsxrtteeiisofttwnorovenoisnrsoxseoeeoeeovnoweeowhfirovesxeutisnnviieneetvuxnreoenxinfnrvxntooeonroewxeoirxenfeeehietriuoofxiexwntotointhwvtnfwtnrieeofifinevsfxioninsvntenrhwiwovfenwfrffiofeiehuriieeeswooeofienuoeifoffrfetewoofeusoeiireootseisouvoofntexsnorovrersoovnoovtvvreineerrieeooxtoeseeowixtfeoettiornofunintonsrenoooosxifsrviuitonnetosfwnewnetoznvfhueovwrnnooexnnfeieninetihvwnrexiinvnieevexnwnvtfewexftixiernoonfeinffisofoefevviownoeionforfevufoefreisetvovixxoehuiniivvirewsrsoxoiohtoovvveioertfhveoitoxoiexniieneteiwerngfiesiiifwehsifrteieiwoueenwssnrtxnoevefrtxtoesnferxveeoeifoxuivononeeentsohofwexinrweuovoutoenhnnxenveoihfstturoeeeitrwiirisiinuhrosooiinffnoriweixeiuuenxtoouwosnnshiixnnefgereothioiinrfnneioeenitofieerwtreniortiweoinniewinxeerxtneeneoofutiiirrnsvoefoetssxonfxenowirutohnxerisweewuntnwfwounnentnohevnooxwwiifsoooevtviwsfeounfeitfxostgfgtnnfsounireiiingofxwesfroeofsxefirstrfnerfonitorneneiuifvhnninfvwsiffrffowxetvnfsrwweruiirfoooeeneetuioveoiioowxwsihvowfsrefifvetnwnzfoesnnevfoitrioniehtovwhreonensnhixsifnioeuushswtnnnfnofvneeetooeenheinurowzvftsoofwwgewsunnioffwersrtttohsrfxsoooitvnnsgruieuvteznwrueiisrineoewnxooiwnrreeofnxtuieesrnvtwotfiiewtoteriifwoofieriesoteofterverrroievoitnnnoweineehiowwvsweruooioffovoonrxvsresitrsnfinnostheeffosieeewntewotwfehonvfonrwrennwxeouontwxroitefnveneessrneeiiioeufeevofnxiifxwhefevxxtiosieonoexfrnvtfntnonereioiiferoutwtweouxoeneiirwotenrexvoouiooztnnvreotweeetveefwzeiueseiittitivsenrfseeisieosinnsreifeewnffiiffisfoiwfirtevewwuforiroteiefetiexwioenshneiiooesirhnonnnoriieoioruevroesntoffnuvievtinierfroxveriutofiovweivnifuwrwniteneefoeirxtnfiovogvfoinnrnnitviwiointtwneitnhetihuetnogwvfvevtxwefooiihevxnvxefftnnihfrrieoeortsseeoetnoioeiisowixnfowioseffexvoiwtteouieoexrfeeefeioxotniintoxwtfnofvxoenneoxowwoviionefnnssoifeoxrssovteeietoiirfeeretnerhoegoiesfvenwnnovzonifetorititohrtoixsinvieivfeivueufnisfoeinetioeoeonwiustxnstenwisnownornsievevtuwnontsntuonseeeneeeeheorivoeigoxtnwessuvfviniuuivoeeoetwvnxixxrnuvfweosofseohivuvvofivowiveinwvouueoeettwoxswnervtnovtfxionosweuisooiwnewwxnruowootisinrveowieoonewroefnsietfeentxoonoxvezroeutvefnueioihhxeoeeuxxifotwneeihewuefwexnftsnonofvfveoufniegionswreotrwfeowfeexxeofxtnuevieffoeeeeivteeeseofeniorevrftenrtnrnotfworsvifuesfvofxweoffvienitnonfeiotwnofnruswfonwottoenxorntfnxeoeeveotnouwetnfteuifnoxnvnnffssxfnuwiefveowexwiioffeewuwnewroiegnwzsniiinoixxeiitstsiztoeoefeesnvfniehotxouwtsrieernouwueuovfwreernovniwofrsvenioevnwoeotnuenfxientsooneexwioueioeeneouoeouteeweiitrreuioheonteuweroewiuiooftooutfeueesfenuwvniueniniforotviewinwxnhnteeftotfnoxiruonutofvrevvsutvrtnexeovoxffoxnfeiiirevesrooueeonnwnxetfofseoioenwnoxeeiwiofxnfteottufnfowseteeeeofwnxreevnvovuurroeefefenuwtoriofxwuiestonhreeuieeoonirefieeostieeeeossnveueerosinweefrsihrnveuiwnesoeetwvietoretzxonnuseixhsrtgnofnietseoenwvonnoieftvoefotwrooetxetueinruizotwuooiooveonoiftuevvenhroerenrfhfsfifwreoewwrtsesoewtvtfueiszviewieourioeinurnsrethertivnsenswenffhnrsvosuftffetwfoenneseffrenfnewsneneeisfwfoettfsstnnweteffotnfitsriotoswsuiioeenternsvfxivtiiwtnfosrwwretsfitsoioohfveosfovtifneeieuivtnexfuoeeiewirioruzonrenvitrsovoovvterswfweiiioorewhsefrieinerenexsirivifrxrsnsexoosveexvotoiofitiexfoioiveteitroizeisiehoeeoniuiewooeisuifxtotitehoswvtfntiiwseouxnhvfnteiwvrooioisnhesowreosiswenrnseeiweisieiewfsxfoxtreeinxxixueuunhwoetosxnvrfeeewhtxeuufiowifefnnneesonfxitveeeooiivetnovtiwtneoortoioeuroosfxfewnxeeinnetnnrfwrfhvnieniwtivxteussoieeotetuooxnuseioiwxsorroeuenrentnsnvosrufioeonteofiniiexfuisseooeiownsnvutwsrfeeieeseiiwvfxrivnfhhteftuvfuexifweentfoovsooveruutoinsofeswuxofiowififnsennsrixveovowfeeueevtinvifrooftirofwvuoutnuxwifweteoiosieeusesoiirneuiusnnxiiwxontverxferuefxsnnorrenrzeruxxnsvooetfxiiseirrneetnnniioovnxieesweewfieeuftzoovnoifofwheexofxsurweesinweooxnnoeeownieiisoowteiofonewxwreoeevrswretotvnewetvxtutufeoeoieeuhnoiieuiheweiteeniftxerntsenoxrittievosineuuxesrwfeneeineruxiosiveeeenftenvinivveroxhtetfwnttgftvninhnonesteoexnoooriowoisenoofowwrtwowffttfrrtervfvufeotffhnxfeueftwwfotrifwenfrfetennisftefeiewvnniiowveooiirorwivvxftieoweeufotorsnrorveiftsirvofoontixfnooteoneeiorneosurnhnxfioiiteoieineeerwftxviiwnteotefesutreeenenvutxieiohvhzrironixovonrsiiteefeeeiiotwfrnhutouitfreiresefeofofiniifnennowoifuevteoioiixtnweeveroeeunetoeeeteesewewfxunioeufoefroreofwnrznvifewoeeouxxetoirnoinnsttwiiigrnoufrerhovfiveefreteoswsfvsrseietneewtwsionisxotortnsvfsvfriioisnfuuvifiwssfofnxienxftisxeheoffesveioiitnseowfoeniofeetfesninfvusiootetixfwewwvvxniurefwioheriiooiwfvsoveifenetroeosonhfvfwooeononfghuonesefoofnfstxeevoenieeuofuvonniueoooinizxfieexutwxvnosroorfovtoruoetenrsfexnweiinxotfnvfieiiinixitvwwweoevnhveftrrorseeeetouefiuxoewtxnuotvoieesivefrvivfweeihwwxiexnwotffnxiwerxtwnwiixufeoeenrieeoeouseftifxensioiiegornezonxenuxwotvrsiivsowffnwoinhfooxriuninioownftoewvsoeteuefxorexfeevnfinnineitwtiietiufitntoowiutthrtoiefsewsuonvveetefoeixiexovriiitnfrfeuntwwnsgiuworuosvenoniswitrernnerfvoftihonhoxwfosevirfnwftseghxrsitiirvfvvefhvvufiooerowtunewthfvfeoeoiwouvefffiftietvnsoinforoegsrsexiowefoeoufeofiinoiioifgvoiteieorenevieteeitwuuienoioxvriowoewioenrrxooseexiuzeewoeirwotozetvoreortxefuvewofeftnueisoneeivroniewuwniveheoohsinonnfnvofovxetveiifniuiwvwfieoseseisveitsghtteeeiottsivovonveinvwtteofifevwnexieevfvvefhniwiueurieefeifoevnnexwivieewnoeerinewoeefofeoohnteneeenofoewvifvixnoetvtitoiwovsifxeeueoexeeiwioeeeonxnotriveionseioxvewnfvxfsrnstwwvivvehvnesevereivfftonrvoviosethueevhientinxvefiintvisoiefeiteexfsuonotieniievereeinexrvstnoosnrwhexoffrweuehonuetoutrsxisthrrfwixueeuurvnseiefeifrtenivtonovrontesnrouenweiisreetunwonvethifewesegiifwnevfotihwinenffnxtnirgownxhifiiwfeewfienrviixnitoufeoiiwioueovueungvoxeienuffifroxfifninoxetteetioxwoxexwfevswtvonrtrsentierusuuitiotevnonootriioivoonwvxiewivwotetuevnefentxfivwxxrwivrwevuheueeuohsfesxnivonwnsonriteirwehfehtrhunioofverwssuvstssenxifneriienneretevowererfnifnnriewfwsiriffseuvvvforisxvosntetrixofffewiiuurnerninurfhsfvxonforeexoeirxtneeifvootxnioewfettfeiseninwuxtutsnrfeonewioioiufutvviweuoennowfvtieiuuunnitttxoinitnwtoiiiifxnftenoioterfofofnhofxitvvisvuinnuveeefrowhioouioisxoenevthuinfeifixesrherienftfsiuvereuooetofsiofeuhxvnhsrirtvuwxtrnisstxtnoioewixfieootovefintegtieioeftifrnnextgeeirnfhoiznesxefrvvinnosetoiftennoonnxenwwhtiuwshoxirfefeeeeneoivoifnfvwsneeotnueuusohxwvnnweosinefefeoeoeeoovnwifeunfwfooosoostiroertosfvtetxixffertxvnrnxetfnunehwsxtirnueviowuffrureufuieiiefweneritrufxxnronresussnueiwetxxiofxntvrtxinfuuesroivnntiieosoffiroohtetoroeotfirfvnhoffieuonexewsxnssrvottexiifweohfeeevtfewonotnhixeiintetzrtweeeevenwunoonfefnontnsvviunxvritfohtenuuvoioouroeieovnesoeotnsevffvueuonwneeeoutioeieeoeeitwieuiteoesesheinvouffrerinnnoonesiwreoietfxeirforotninfonnvttfnvooenessnsuhnonnoxnterifwxefrfiruwvseshrwressufifoeixtentnsneuninivnioeonwxsoofnvrenwsoifrivvewnosreweewreveetfiinhtifeoxuoienosovoffexoinwnvieeoteneosuoeeisfnoeotooeveeiitfeonifesnineeeriiiwffeovuoofrwwevioisftstwveowetwsrusefhriexnfnwewsevenneinvxoiswefesetffonioxsowwveefsneeeooerxnefxiovsvoesewiifvxeeoxxxuteofoeosinifiestoroffosswwuinroixvoeiirzeesfsfvfreffifwveiroeiisieeeifwexfewhewxuwnofftihwovevstvisnnzorefnoteneiirirfffiuonuuuveoexiiotefoneevsfonsrifueoerfonneteoostieiiitfuuoeuufveuerorxtvnnfentreoofunfieoessxosfwotonuxsfwniounwuwiwioxoierfewioirvtseutooostnifreesofinefefnnoeneesioinfhoeuieoeweueoonstutentnffoesvfoneoeixrffuivrnooeiewieenfvieeiowrroiirrseoeieiiovneoiroetetooeexovositwneuvetiotxvtentursoethwiievreeixoiieieeerwieviuefefowvewoerxeivffntriouonveoinsvotfienneietfinutoovexennvinieofxoveixvoettvxeoewsfsiisxefuegsooiniieuffoveoewfnoxefoewuisgtnessnetftifvwfeftxfwtnenzvtnrinofeteinvxuftoueisofitixrweixvviounenvsgtfnnietnufohvrfxrfesrfoixeievxtseioeieeoesseetxeioiswnuseoofsefenfeitewottoiutofssreniextevsreiesfrvwnifhfueeuitfxoneivnrvhfiwxoiiinxoneiosvwuevverehexinsnoonsreuietnoeouiiwitwfvutovitsuienriifeotirxvnieenfoftooxovorvstetfoeontexfnnnhtrvniooohtewxooruiuhsfnerexvosnnotwvvoeeowvtiiiuiviisonroxffwooetevneeeuotntofwvietotsseeusuevnosutswoeirofeietvitvfonneuouuiseriixurooforvnneeefgvurivfgxfierfwwoveoootxnefefwssvvvisoohevfnowntuniseieewunofentxieoiiseonexnxofuefeniiixttwtesioifsenevtoontreevwwrveefeeenooerensooeetovivvvineiuisfofnfrwnvfvonsefvexwvtntifueveswwfxiennrnwfegiishniinesenuweieeofonsvnesvfrwnexweetooeteuxovnrowwsenoxunfwntonithwnenfifnsrnffisnwneeirhnuvfurroewoeeeoroteoxoxifwxerrfvrnefoixeeweooiohitnnnesrnisositsesfuuisvovfretgxivvofeuefvniisveenuoreenwswtwnvewuevwurfevfennoveoixeuuuifnfronverieivsntthrorhoroxootzoonoriofisiueenoievseveffoffunvfftiwofnnessfevuerevuinenffntsooftnoieirnoioshtnnoionoewritoinfseheoweoitiesneiusrinvifnieouohexnrtsintxooninrseoexrfsniefvexoeirxorwtefoefexovewwoftetrtixfxeuwtfefsrnntoiteifiewxoioveeviftefoiirinivwnitswxifvuieonvworstofoeovoienxnwfwuesoonviuivuniwnwrrwrfiexunnerofnnxoovezvosneeeftoeowewooegoenwoevowfttniifoosneweixsoenttrtutftsreenioerroovewenfetovrrfeefwitseoeevhfifsiioeerrftxowexfrrseevtheisefonofofneifutfeseenwrsswoovetfxofvroevxnnrtviowxvtssriwinfnhoonsfsifwewornuehfnrnvsnffiohoneoufnreiertfueenifofeoxtowiiivnioreouexfhnvsiosnnsifxfoeeooofeefnneotionhieinvhhniefxtsinxeneerinterrnfnvniionsviniroheositifuisiienvisntenininxeoiifnrruineowsiveewtieieurvhuteioeinnoovreeeiexiiffieufetiiossvtnosotesxifofitevusrforunrffniintfefnwiefxwiieoufooneiiusnoiwvohoivuiufuosiennnffnztiirnxetiiiieifotviiowfiveexnoivenfnitfoinrivtvtuiffstwxvfofwfiefxfnowroofveeeftoegrwsetfixtnefoouurionitonnrvsvwouirittoeefiooietifurrnfinwfvivewxuoxxftionrnrowinuuietnenriunwfiefoutnroxtewhotinvoritnvnoeerwnffveuiorixeoefefeiiniueiowxsosexortfreevtoxnfiwvnorzsiuoiiioftevhieerxeoisneneeutfgoitwftoeiervneessoreooviuusfioonsxtroviroxoenovrnowntienooiiuitroxortsfueinuwiwfofnoevveorvweixvefnfsnronhirrfrevonevsvviioieiiviireovffeeetiutevsnowoetsfevfnuxetxtnfssswxetftueirfefnrwixixxvtoieeninxofvooiveeooxteseeveeneenexeeoxtoieinoowuofoexveeiotosexosffrnexoernuvoiniohiivinoirwntstniriieiooeeeioietrxxeshooetienxeefneotifnnevriefnnsfouvvenfeoeotisienweneexufffffwntffutnnsuennxnotinrvooisfesweeoiownvxvwroeehrirotehoveorviwenxeuexhfrxwovsivonuvifiinfweeefoonoexhnefoxserxvoxovoeeettfoinevvfesoeonffiifieneuneheeiirueowsuvtefiovinoneowxeiveieoifieoieirnrenefnetevtoteowusrweiiioisrvrewtssgoeisxwfueewneeefiseexfntnfxtiirtiweservxtsxwnixvwniruotentgtxozouooruivfniihweuireizoenssevurfiniorueneuifoeonenoooiwxxewtfeewoxifiiosoifeeunuinfxvinfuovfwiuvnxnoxsonxsrteiitnrvneewrnefsufeovorowenoouretrsgotinvveeesotoeieissnuisenffvnouovssoooitntifeiioseosrfnotnsunrxeveitviiihoivfirxroreisiwovwfsoowosuwrsssnvuoninssnxreoenetfuifnoeoozoiroxeowinieeuhvsoixostzftefwxxeuxiusowsuseoeesevefseieexnorevsniiitwoiitttixvirirorfwveovwnnttuivrivtvuovuvitnnrsrseefeewnnvoifieniusonvfosnxeivixrifttreeotefsvitoneenivisovsineototvfvfnrnivovieiixnuhteirootixousetvfvenenveoevhtoviensretiioinionifoswffnriifhixevifuennivsxeeisfnotvrofrtooerxwvheitiuoitrrnueeoereenfitsnneiugtffoeenoeswxiowfnvivfnefxwusuretvesngiuuoensruxhnvnfwietwitfixernvwfntuioiiwiftrsfoifntinotfufinwuhtefoooiitvuoivoneieowntesrfioitnwuwtoinitioeonefxufsreersonnixxenftvueoeesfiefuifxnnfverixriiorxstwstofttffonwnvnsnehfeefxtnsvootvftwixneieoiiueennofeontoefrwioefeosrwnifrtixotwerffniunxoeositeneffeevtewisisosvsenzeinovtesoxoerefssoennwiestoxfexinfftnheouxtihirexeuewoouixihwfeviffiiftietsseneweooviofonnifiohswrfoxoveesiovxxeviveoneeeoifinennvefvrfvwoxnufrfuewfruitnhsirinvffohweoeenxifxeirnoientfiuuwnitfnrfnuivvsevwneerievrtontunoneienexuwtnuuioiofttiunvxevieevierxoixosnwiofrffnsevnoiexoffsntfftnoewnsefnoieeeonxxxviuefshterenotioonfzuuristrioeniwhreevusfnnroooverneieifrvtitnnntiotuurofsfxfuerxesefrehexefniffofotnxiinexortizffwiosfusuoteusesesxvinewoeofnvseiseinnxeeofneeoeuirioiievirffiisefrftioewrutnivsoeefwexfxorhvfeensnnnxvgvsrvvxvxeeeewufuivfvsisfsveiirftxooefrfesfiifrxooerevooentrotisshnixeitftovxfveusnreietfeueieinwienuivirfwsfvneerfeioesissvvvsrtfonvnsfffiveeieonviihtgsoroewnwfohxexhnirsoowinexiiiiooieisohiunwnofennfvsswneoeeioionieoxwowitfofofriefxevnsrowieuistfnixtuxniwseiuwixotstiientfvoeorosntextonsexnsiitiffrovonionnoftevehewuirwtsfnuifiiiveoifrfoeexfsneeionnersrnioiueuoteonortiftthnoueivnrwisxuonieofervieohrfxhvnetsnnfxirernxesnotoenshofvfvoxevvouononhxroresiivreriesoeiueuffifiivtieihihurtweesfnsieffntnvvieineufnxnnoinneivseoisneifnononfteoofifsnuntwfooorrsifunoixueuenivifeofroswinhwrsrfiwswuoronnevexxvxonsvieeeteinsovtwoxieievoxfsteeeheweeensnshenvvftnoivwihnnxveeooxofierisnhnnuxeninnvoerxisersethhnztxouexutefxuxztrexrorintnivufxenwfsrxruxuxexxooneotvrsifwiuvwwnuxufefvtifsfeiitsiuxnwfietoeffernwiniteeeserswxooueonzvinefuowvneiexoestneeoigsoofwiovveoiviirwnnntoffovonieeeotwfnwvtevfevfinwworeehetfxiixtxnievoveifofnsvwooxvxerewnfeuuifiwinoouovifwvwtrfeoieiisnfvnnfsvoenenxvfftswivxowfiuherisnssrnseionsosxsfofevouneenifeefieuexfefnorrhoeetuoweveunwnevseoouevwrxnrwesnensxefeofeitfiewxveoniesiiosnwifnenesnsrnwnvfvowrxsxixfenriffoxroxrinoiweviotofiiufnwwfeotsnihexvvorinnewvoseixovnetisefrfohhveeeteoofosetteereotfwnneieeiivrfrtnihxfeeirrifuerfrusofsefesrooovritrrxxfwsevtviinfoseouofitnnewfoffowiseeitiottvegvnvvieseixoirofnerwfvoneeiiofroeronehovfrnweofworonxoexroenoeseoweoinfveeenegrsxenettxfoofieoinesftfoxnirszeoifeesoixtonntevixesevoitenfntnurvtnftiooeniueirnifftiweeienfoiixviinsuefzfwovnvwtvwfefuiefnoineeveeeiwvtoooevnisfienninoutvesfvneeisxeoeovoesfeheuriieuotugesvvninnvrusrteonifhszoofnioniefwxtioisneuzuxnfseveovvenewoevitfvnstniewtxwoefeeuoevvoiresewieivsitvixrfienooeuurwvitonretfenvowetohontnixteeufesniinseeufixxfowxxxvvvfvoeoeoertieieeeoeeftfvsoefioieirsfrseotiuexiiisefrotonoenownwufeerwheeonxwsisiienwiootiefnxtiefizuvivovereefonsenovfnofiweewoornevofieoxinnixietfuxreiinfxexevfoenvteosfrstrufvtvrvvievxiiffftoiefvhisofeonihwwftenvoieveeinftoweouefteinfeetnoffrwtiseinrnivexosunfeohotoevnoiooisegvseniivsniozieoueufroeiveoenesfsonnvnfteshnfxnionwuixooeioxiroivheiihoeeeouooixieetvvfsieeuhnegfeteeeofrifofevteeeosvoveuwietusvxtonrteiteehsnofsefetsionnfiioiiiexefiveuixiofnnsisviuxhsfxwteoftwureuninrniwexunsvivvivofeunfesxofonsxwefisxvnfnefsivoxiotsfeefiitnsefviftrtovoenifirvifoshfuxeetgreenoneoeefoxonfhofixfeiietnsstvsseenuoiweouisfftfwiiwoosreresnoneuriiunoffoftivvetiiineftznszsfisveoovinenssfeeesoseehfnfvnvnsoetvxsewerireenonwfnfftoveiesseeniztownietwtoniroosefextreifieososexxefnevivfninexeienhvehrsvnetewefowetoiinfiiuxoetfnnxirxnioesfnvieuifouwnvufiinniviwnfesnonnwwefieoxoewiuoinsreoiffsennxowovxieixiewnovfgisunfvfntrieoossonsietoeitifteovinfnveeeevoieeofeesserefoxrisfeoienitvievtifweiexitunirefurnvwnvotnfoononhxeeisehoovnieieesiwwuetufnnvefeeeoeinevefoioeitivovniriiinxosivfeftoiieofriofouoweuxiofifveeeenizeoxxveeneovwtonifeooiiirinixnifosfvioisfvthevxnnvessuzffntsiwiinftiiwoeexsrrneoxiveonxeoeeonifseesfxtsisoiiooiefoieotntenoswhfsxnssewseuftfeeifevsftvrxnosfweionxeonfoevofixesvsefoovoveenfveiwonofsetnefeenzofossronwftnefeetoetvnitrivsoinrnuwgiinssveiteseoosfnveteinieefnwttefveiewiiuenfusutfiniseiowfiiginietreusvenoewwofvwitfeefrxrtfoivioeninoooivsfetoinxfswtinoviroiixtefoextooriewoiesofesvvvesitixernofixnxteeeiehohtiivteexoosnooeninieuxeefvowenortofwefooieefexfrenisezenswivotsusfffivoneofvwninnirfiesouwrowiiftsvewwuottoenveeiriivevienfvnfnuwxenwtffstevhovitnioiirnonierivorhnfniewnnviiffixtefteenoiiosfeotfnxwrivenoinfnxnnieeffheeeweetvexnrofivxortuftfsnetxwwtfioisirinnniseeiehvofueishtwnoooftooewisesoirnusoixeinioxreseuenrsstrevvxsiwfvsvoenwveisuveeizusxftwvioiiveoerweusfehefouwvunwixieeixfwuovinvintvontvenvrueieoooxnufsxevevxrevnivnievrirnrevxewxforviitieoiiosnwfioisixuixefeersxhfvrrrioeeeoeooveuienoofisoxefrxenviorfneoivifeeostnfeeorswnxouvnevieorxwioehoifiohieftufttrxnexfitruoneheexerwrtnseuenvtesrioeveuivfseoouvevnrttetrofswxuiexnetoefionoinegeooionevrevteivevoewefxreierseevnffrfeworhooiiesxeiguwesnsoosoeeotvevreoznfhoiwxouefrthiiixiiiifiosiunrxfniexstsoeeeiofuforveitsnnxinhsoxevnvxvnxwngxneofvefrroxfvsvfnisniooxefuunisvtnuvexxssieseiiexefxuuiostfoewnnoofonovoufuwovsxovnsihiixvnieosieewistsiovwuooweesefounefruwtoifhvsestennrosruetreeftfionwtenvtfeiesfeovfeeiiivtifsufirfnwevgtreeuiixievxnonfninvoiiutteioesrtvuovvrvfsowrineoteiiisuizvtisitoivosenieeiiieoittreoowfsoeffnenxosowvrnvswnnensfexeuwwwutwuefhffxienviontiwfffneioeonsrenxixeihouisiifsowoneexrewvsfgfswfssfotinsxneienfeeinerweoetesiosofeeonoswuitfvneeisetitofiohgninvwinuhrieownveiufetxvensifvftenrieoxorfnsfoexnoesenxnotfeovxorioeouvviexnsvvvsnfiooeuoeiineosuiohxiixgteivifwihofriooeonneoeuioxftonvsrwnixftsvviinfroeirfiexeiowfineseneiowwtexoeoxsnieufneuiteifxifxieorwesznnwnfeoueiiuvexotexrnosvxinrruveeivfnieniexsnnfiexeeeresorvveoonwwissiuruxeishxveiwtonxfeivnnviffeixifowtositwwxrfieiisitewsoesoeinioihxewfiovffxsevvowifftoeieeneinttneixiioteiixeeiofiottoofeoxferneettnftesrnuievfouoruntiiernoheosroxtonfwhrhitinoowonfiresounoirwiwixttfssxwieoerertfiswsfnenvnewofeeotnuuirntvutesxtixfuonexivfrxfrutfthoiiiovunfeonsiinxieiooioeuwuoeznixvnffgeresueiereiweofusttttnxnrvnenfxzieosftoiuwesoxonnnoixsixivxvixferststiefiztitoiefsxnnetuxnnunfoeooioiooiewrtwtionntisoretrovniseonvivrofnutioewriieiefnwrsretuevogfeuiffworiioointtnsinewehfsuoesneonituinvetofineifienteivtiwereosffontstxesfitxwieirotsxrriihuiexuvuffnrovhnthsfotwxhiniiornueoritntfvexsonfusfetnuofeirfewnovwfifwsorioossezftwvfuteuieivxnenffeitreeetnvfetfrrnvoeervnvsefeofroooenovorvfoiinuinrxoeeeoisixevwxtzisewiesoeiiiuisoenexitsriosizwsiwseroiiixunfreontxeixineeffnrtiiioeonsoswuiioerruwxinevewxiiienfnifnvrxnvnnnsnvexeuoneoniunvtenxtorfeewsvnevxvoesiosuvtonvisweuotioeooeonnfvoforontnooxnxrfiuihisufnitsnffxteeeoenwwinwxettiioirevuveitfvovovnueeifxffwfieoeiisovenoieioonfinesoooeiiournfvooveethnnenvsienovvunseeitiffxsirfeonttwofeeinfnevriuvtneenneeriirhxwfnoeewvosrvssnvntiossxtvevwniwfoxsoiuefiuwieeiiirioteewegovineorvtnoinnuffrvtnntensxofvvruivrifftfieintruooioevsivrwiesoxisnrsrgosfxoenosxirnoierowiivfexxeeiseiierfiefnoefiineiveitfxwxiewvtwwueneinssvinstnvfniwxnivooeeeinvvniegvsvsioxineeeofeeneennvhitxeetioseezgnsuutoiveeitenstsnirreseroevenwissfinnnzirierrevuwerfefiiovfnniiioirirninfrnfnefnnvftvuerveooftoxniiifoieiviufrfnoxwxnornfhxeeiexenineifnnvtftsweeiuioosoioofeveexixonuifuinrowioeixeitrxxnswioeonissefnxeueinexnvesioitonevieirzvorexoeooxeisiioiieofvnxwiinexfieiifsneoifituefrixwnxoefvuiifeeffsiirfuntiiegieoisiufiwiexnnoifxfroeffoforvooivvtoeieesxttnuiwffeeexueiesotifiefvofniiueoixrnitsnefosvroxieenerowsevnwvswiexnisxnseouxtrsntrrooeeofriofofwivnseivrhvteiiooexetusrvnvtffentieenfnvxtnfofifwueffnfteeheoeiweiefuniehnneituevieiiiereowifvonuohvvrtsofeeovifoiixsefuwsesierfiensohewsfefsvinvifxfeietiwofinnoxssfofeihnifivtfniewiensenrvoreefovxeeioofewifniieovwrernontrrfrtsiotoixnvifivnrousouwsiiueitsfeihnfwrxrntsttviwxunwoexuufuoerofeerfnheenvneiitfverefiirseeostehteswufesfuetexivfeevfofieesfeineevfvnosehfoiovwnsirnerevieouxfuuniefnfhuowontninnowoernffxistrisrioeueiofevursxeewotosxfertxseoinsnnefithnenxrotevtieonnxeoissitieuoeniteefnnxenxnesnsfevefffxniteertitnoreenfzexfsxxfsivenxoeevswntxeiwvfoiheetneuohnsnoerefwexewoieneeooviiinhrfwxvoeixiinnitfowifrieetvivxtxsvfftovneooexoheeosnwroorowiisuuensrsiesnrviwiirevifeffeirnrfnniwtxioonoetfsvwuswewseiushneseionnisrvxrixtnrfuettfeitutheetfexnereiforestournefweseiuwtinfwsrotiofiennunseuuiteuuhfxosnwrwvewwserfnriifieoswihstsefvvnexnwieueesewsuooniixuootirsvusxwfeunoinxexesnnnfvvizrrwiffteoenfevetxnsegffienexsotenextiefuxienxtfsoioeuoxeehifixteftnioeintnrieeortivwfitxtieenefetxntioixegsinrosxxrnnoofeovooihterfonvusiissnuseentoeozosffueixwnhrfewiioinnorovennvhxvxsrvswntosinrfiierieneriitonxivtsevesnoroviwxitnfeniivefesietovsxuiwnnuwsfosiiufuifiiefoeetveofxnvioefrsvnnfeeeososnvxnentxrvxoithunrnrsfwtoeveeeoeexoiueiftiveifofsrriesneovntsviueztettxinoiohiinfuiewefeeeufvvweiinfeseveeiifuhhoeivisevuueoeifinhrfxerxitxfnnssuvrvfentesteuswesnsffeoinevniirtseonisvivowtfivxifiotifiiexuwirsfnvtnrfeeiiwotnuixosovoniovnvzvttseuesvvnseirsewffrofxfeetsotvwoefneinsosoifiixeniowtrnnxeewfefvefoohxewfeuxxnsveewievozseoofhtonfnniiutvzxsxnroeofexovewxxfsetenxresoivsfiexfigfevoexifeneotsrfsefovsneusiewronwivuwveeionsrroffroerfzweetthniefuoetivhinnexieinewnfoovnirhweoetntitfxooneouvrifneteeniestfntfooxveotinresusoffiiivsisffvefnefnnffwiiriiixrensifxvuiiievewinwxvexosrrnoeoitterniseeuteftnniezeneewviosefnevionsnnfosirenxeneeniverioefxoerwosvowvonseteoenxinftsensetvisnongoennfutixeorrtevnxitxnowutnswiftviinwoewtzwnoeetfniiwvioonveevwrewxsenoiiennrfeiteisfezefoivififitxeorunrttiinxsniotinotretsegeoniiieeotouroiotovwfiirxiiwieoexrxnivetfinienieotirnwfxeevftnoohstsveoiniionsosireiethrexoeuhhvofeeexeoizvtvsfvvvnsvtovevooiierhoniwoiiougexwrneowshriixinoofvnunientoiixsfiioestoiintoixioruesrwuonenineieefnnuiveoixixesetofexhoeiuenteezoeerinsiiniosusfvftvxoevewitfinfvwtnreixoftnnnososiovionfhveoxeueoonxoxiioitnfoorntnennnefffsesnnovuffrxvunreexewretuenxwonisofnfxxwvtrnerwriitvnefexfteennixvientxunfonoottoetsenwofefvitwnefiweotvsoohxwseiiftwotftinxsnniefenfixeieoveeooonoofeioenevesoifiieoirrorxoxteneionvtntiersoixftnxvsihoxuosowrevoteeniigwsinrisvostniniiureoniuxoezfexvnosniuxttwitroeeuseexosoiofvunottxfforsnotreesewoersnireoivsrusvsixnrvoferrxiuretevenevixooetheiotwiustxwneeitxoivereeeoofevhnoinetneeenxfnwfiofxniwnieoeseixotrveiexorfsxwwivxnooovfrstoiehsonfvsrioififttfeehxuoeveieogntoieerseeffieiixxxoieotreioirxfseisxxvregneossostiooxuousteetoxfwoxiofngtniivnrnentnxfsonnseuivisevsevooiieerxivovxeixoeotuonifwtisewtsooeetuxoennsewxsifxttviietxovxoxxnwsoeteiieefevtnoiteihswsihoxoiofwveooiwoosowrninfntenrnisvieiiseniwxvuxixewroeeoniufeuvnuetwosfeseeeristovssiroeftrxirwwrfwneoffeieeeoeneornseniveoineernfswfttntiinntowtnowxtttetenonoeexsneineeneivnvtxisiwefefnehonoosrunsxssvsonnxtneteeseuxeoixrnsrwfnowsfioiiissioweesfonsroinxoseriuoninfnwuwuxtoixsfnnfevrreoitfoefnnrswiixfeofswwivzrniixfoutveoesennewvenefnvfexitfosvtefsvwvnstvverifnorioehvtevooroiiexeruwfsrxewunxiwxwnithfnvtotefoieiewiwisvfwtoxoiniivsenxnssoteeenfnxrteievseevoeueonnuteesfwvrnfeiuuwoirrvnnvovoenownfotoeooeewrwueseeroosveoeefsfnnixvieivrrnnfnnfeutenewxofnensoonvofxxfeinireinverooevsoeiirrosoevuenotrvitoserstivsfvoixvvfitenieftfteinoienesuvhnxvtotwoeorffeneoinoxtiwioitoxneneeontwxvsvnetrveoesieethixfeiossohiixoonsoirxtiesrwzwnesneotritwonsuneofiiofxiiueeoiinirvfuutrhtreiieeeevfeeswrvovovuiwioeefnwffooefoeiesiiiiinneveoxxoxxonttfxfeionnesgiinnwfniiefwntswteonwiiwterioosnenrinernvfheveirfsvnerwfesnwfvseifxevnrieveesetvhsisrnxfeistewxstfooniwruxsoifnhoirinsrneersirgfneoirithvieeftuunevvroerueustnfuewethonxtivuvitvfwneisttioxioinetivstfforwfinerxioieexrixtrneneeeeieviiineisevexewrhwiittixrnwvoiesseoesweortfvfxitofuwvivninwsnweeevfronotneeozwrwrxoneereneveiiofieffvfriivvweifnuiwefoxgefrfneiiiownsnnerisoxssvreoeotfnfxxirfwreeivioswovnnxxvneeoieoostievixnseooioessvooiuruxfoueroooessioeiiffwrwnfenwhfeihitfennoiiwoigsorrrwwotftxevxwvenxfvroovotssixtwoieuotioisnonrxnsnnvesntofvioesioovretonwitvsvxthovfwevfuwofrxnfexxnitronxwnsnueooxeeoxoeetveotwiooinioxviixefiovreinioivxxsnoeihuefotsrfrtieeetesxisoeneuwennfneieisnweneonhiefniihorfswefrnoseowrveeoieftowsoffvxnxtveervewoesvessesiswiwrntnwifwuuierfoiivetxeetetretnfnnnwrofensxwnwxseseesixeifereeihonffwsowntvihntioeorvovinoieeetsisfftgoofexfnwsivxievofeisiesretvezuiwifxihevtievtonniweixniriseessoooonxvirfitxuoeoeowvoontiuowterxeruofxetisuffroitfieeefxefoovtfxwxioxniifvxounvxeioiifoengixutsstnoixeifeivifxnrvsnftsfioritefosiozowenetexsnowwieonrfvnoxfueownrstnifsievvortoofinereeonneieseiinreetesrfrxxniexvvnnsfxxtwoiefwxniowiursrrttreunsforisernsvffinvexrrftseionixiesnixfoersentiteioiiierneienfssrinirxvwtovtifurneseneonnrsonsvrwrnoievieiowwvootnnfootiouotvtnnfeeefexrnhrninsoriounneoveiteessnutnxhtsovtfusxonovnrsuxrsxviinioonvoinniuussfrtennnonvevtooffrsonxvvrtrwovetesoteonougnuefnnioosfoexrxtorfnxeewteeiiiofvotenxseeezwrwitxhhxefrtfiinofvhiioeftsittwifhxvoeoitntfswwnuoititreeoeveseeriowviifnzexeefwvefssnsxesinonixxxsieerefxenfeeuiuefifwvxoniowenetorsnoxuosoinwiieweineeifesxewieixrhfteoiiszooiexfevioefwxvxetehnuuifextvfoiitntioviorutsowenoitrxnntxwsrvnouseiwifeiteeeennneeoffeoevvtuihtiwnuifniefioorxrfnfexsevntxnnsewosetutnxseseextonvvsiuxieivnoniiihoxxtextssirwowvoxfsvsirhoitrwvxifeoenoesoixenfruivtniweoxivsnfieniorwnesfviiservoeooeeonenehsnirieixofsieeiirfnoeioxfssftfwtiousiofwooeinsfnrvfvteeseievfffvowsesveviixxiretiieoewhvrovowienenvifreowsfvouteeiohsnxnirffnfsxeoeeiestfviiosoiohntwneifhfrfeniefnieeeixioiifrsoswxesofnwsietentoioifneniseuioeswroeiowwexvtwtnstrfgoeigiiwwiierwiexneefiswsxeewiuhvsefvsveoneietsxeiirxsiieuiefeissrieuoonreewtiooiwinrfuvuvsoersssovnvxonwiifvrroeoxuseoovfietxoteenvivtosofiorxxsernsexwnfeefihnseseoifrewfofossirieeivostwiugnoeeoifresntvixooieunfwuxrnxwivntsnfsnefeeorxnusrwexiefovvweneietfxvfeneesoxxeiioeiuutxeetexiuooiifeuieswnfiensewftfotsnuenrfoerszxrufvexxnoexniownotrnoftifnvrivinnnsxiioxosorwihsfninieetrfgefntfeeswfnrxssevseveennfnifgfetefhuitsenfnxsiefsooneivseoeoohesixesnotwwwivixxintfnixonftswwrerweetoxxnixosowuronenivhrsfutenfnuweeenioehneifntseeexreifeeftetwneexixeiesfennonnneoetoionfvnrenxeutiexunvoxwvriifvsoxsuxxnfvuxoiniroinesuioirusfurvstesrioewseixneowoineeveinevivtoeinsevtiwwswioriosfviveifrxoriisvioofosnornivfvonftnixfefvfwofnofevnfevvhnsieowiseonxrrsnxrifesioixxsuveotieixenffreoivxgofofnooroiisoteuuevefvisisfonoovtsefxneezsivvfrheeiteisuieivfnixfneounvfixfnervenfntesnsteototieeoiotvnvervxerrwewowsisxisrsuieuexxoeexoistiwirvwtfefnresfiifteoefviseussivexixteoewivouefoeuxfoexeotfiiiuevvewziexneefnonifveoihworexeunietnvvxnosoeoonrieovevoinoisvwionfrnvtfifeeooeiietintsosswenoeeetnvxuxfzrufeeinwwevwoiuusuueiviswfeznrsereuowsuwsirnznsvxfoeueruioeofeeeowsvetounixsvvvewiouxueeewevennxftwvfivniwufsxuoenewifeoeeewxtfxeoswvtisveovsivurwexfxeeotfxnwxtsvvsftesroeeiowfitoinunfnvwnwnswsiefivxttrveseivoxiinuntefenuewitfftxnrwsixsoheinxeenvetoownxeefneenwsoeoxoofoweohfrtexnsnviigiienefvxnveioiitttooviiooohsiiiwtsieinowretixniieorfofoeenrufhzxisisvonsnxeexxrwnxreresensitfeiohxihwesnuouwevtntioteofexxixorviioooxxtxoiwosuinvesisnethfneniwtxfiiuxihroiwvteentuoxoeseeesfweevixivvoeivetnswxishooioinexevxrreirerfntvfioresowursznoeneoeesihsvensenonswuvsfnsionovvrwfsffneeeixnofiuxtrxvnninhnstiownnefnnheiweieioixiiseeefsvvxeoonuofrniswxzuneeffteewhwofuesrrttseeoeonnoeesxirnfefigeveefiififvnuoinssfervxrrenesewniienoexfsiiiivvnineisinuwwsinsiveeewhisuxnineuufxrorntxtnxwewneexeewioeetoosieirxoinexieiefevofnstoonfstftfiseinexsneiesinetveftefeefneoeoxsfvxuironuvtevnesfvtwvrfvnfsooeeosfeeiotteoserfvwfivseinuoietofvhnxhsifonioowoowvosiffoseooefeeotewuortioionrrrussvvosxieiteniifroenuvotuonnseertnsfoxnweffsongswoxreievtxfrnhrtsssnoievfzwnnwiixrerfixrtioesneweeioooeevvenveuooigtwroxioontriwsewuewroeniorstneftrvoeeeseiirnxuvivxnfewxnnnsfnfuneeoevveiffnswviiwwieinnteoxvierefeioxnwonnxotrxenetxertsnfonntwtfwxxessreiesxoeixihxihnsnnxieuioifvnvirnsrusnnnivennihixtiinfeiiinonvgsiseiuieoesvreffwunutionsernstrfrvweivovtzritieoserevoonowfiieieviriivviinneouxfvnuvvrzoiieovnfwizeefwxnfwoewsnoweesftefhtheioiinnreeesxosxreexeevexieefeseifoifgooeensnfiifwwvteeeoonnexwrvioxossfwhzinixsoieevnnuvertrriiwvriwnuntftvnssesuntneifeeefewseexoierwsesnixxofitrhewxiiieizeiieiiissosnnxoeoewneviffwnoeoesontvnfgifiiiiwewiieiifevrvtrzifnovfennifiiinwfsefnssonvweooiweeoufwxeifisiieewevifovtwofvseirnonovrfninennvuuiofifsusnnnoivonrwesueeoirueiofuwrvvnovtiuxtnevtnoivfwivnsistsouffiouvtvnenuowvvsthrfniiwisxriinnefuresosisenfnsoreefuinixotioienoiwntovrewfiisonenetosovrfvotwenvsefowrvounvxihwnefunienrowenueeesieoeffsntvexnsnssoeniieevennxtunovevnevexenieifiinotsifofvissufewxotreeisnivxnfsveveefnosnhwefxxwniieiuevxutneiwtowniieoeieifwevtetssenovfnvtoiriseonooxtininwffewoifehwvitnwefwieonvefetveeetftesszefxioerftusrwxeefsverooisiwswsrinnsrunrrsetsvewrevoiesgoxreioieowveovoteiriefwnesoiiuinoneooeswsosiieuwtooeisueofefeeneuxovntxrnrxwworweoesffoeneoiossroefinoreritseeeixwisfisetrnwtfvrifesieereoinwxrifsostfveerxivrosofeiftfieisonvnnvwuieeiieixxsoieentsfnootuwvronsuooenrornxenunfntetnssftieeniineuvixifeeooihfvsfeeoinwereetinsoufsenefiisfrsfeneewtxeotnntooofexhixswenfevftvonixiifufintniviievfeoowveotvtexronrtesegtwuvsneennifxineohxwrionvtionoeinewnxrviseetegsoetexnunweienevveiexnoofietoofxvoirirothrfiennorienoneffoefsfveewwsfiweoetfeorooriieviwnotfutnnrsertrviwooefeoworefeureoenvwxrnneuntvevinoeereeoenrvnheexsnttrsnniveerenvueuovosxxuooefnesfrextenieonrsxeetowehnonsiieeietrenhfxeeresveiringefttowuxifovseooewiiuostixvsewrnevvogoiufirssfwnfisonroeewsvvoonexwvfowintetvnsrietxrexrvfwnxwfnwneieennrreffenureefitoeffrotxoxoenoteeenviootffoxrevifeoeiivtrrtvwiofsovssnonuosiiirstxtewfieotovsioetntinoovnitvfsoeeswvotnisinitoeietefvtxfofixsgefevwotixvoeswfvnferevfooioffseeoiifnefvwguioevofxxuovfvsuenotviuvxseeshfoxroixifvoweoesoxesiwtefvneueoeeiievwnvoitnrvtifeeifoeninvertxteriieeoxinuouhuiesvinihisfrnfoxxfwintrevnenfeeeosonffnxxentioitrretihiewszowoffeensrooeooisrexnsxeesfxufereirrntiiunfhzrhvxszeenoeniferfssnisnonxreoifsooxeinizfsefeefeioxvnoitiiefsninfifoeoenwueoeuingeeeusvnwruooxwsfoenwitiriitivsefheifoewxetrofswnoexntvvfhsiwtsonoooniwexeenfiiuitveeexwifntnniwvrufeofoioneevgsifoowoifevihoteuuongtfiuewesonvxiweusvuoooeiineehsfxssneisnoootstshfuirtsfierveiivewfniooioeenornufewevofinonifxvfwuveuutwnwtgnoetssoitiwninnwfnseonxehrxefesoiefveswnixtexefxexxxtenieefonhrrsisitfewnfwvwreswetexsusxhswvtnotwwiwvfeoiutiinrnoxxneoiueenwsiireehtvxwsreeeefvteoeievnnxfevforofooiwefvovwofvosxrntevnoeeitieoetniiittoiheieethfffxvrfeonnsrfeossetoxnvfehvnteiiioufixhftssniohnowfnfovnhtftiitureieonfeiesnwvnotuehutefsenntvwvuoffoeeewuitnorienrereeeefsvsextsonifgxszefiiertefhnroteiisxtoweifeexeoerevesriuxexosowiefffenoiienenoosieeotugunevuenfffsiivftnennsiivxnrxwfsoiestoeuvoieonnxivoeeneeivrveoefxtnoefxtsnrxsnhoiennoveitnoefxffieievieuseeorenhixoievinenertetfrnifrserosueeenwtwhiunhowtfinenssisnwrtefrnnxgxnetieiovwosoiiiirinevwovffwnrniiifivwtvtnesievnortennnffnvwsosorxentiofteehirirsotreoosevoxsvtewinovnenoinnvxwfxfxnoeeiinvefvnoxnznxfonniwoeeuetnerernfootrfeooiievireoseixotriehefonfvrhootioforvfweetfexfrninftntorotfeitixfeeneheiwinnrinretoetiofwinevxehrrxoswvtewroniiuxienevoifunouxefonfotsfioiteuietesfeinfvrsiivetrnxevoveirtfoevunseuufirvsnurteuoweuigreetovtvieonnenifsiooonnefntnnoovssnveennssvvfuntiiefixiixnveiseiseewinnowffneiwvviesittontesevxvtnvoieoentienenserwnniefxitnwevneiwonxeieeroeftoeiovtteriniennsiesnfrnnnxniofnheeeevnsnonnfwxetvnntnehiestfrioiwxnuwexseinfvoeftnvhiersexfisneieziexnexufwxtehenwieiuenowneinfirsxuovoieifrusieswieefofiwfoousiuevtsivvieeseoxtvtstuorfrfexeneneeieooneivieeewefntiviuhtvfeftooxewuwintfxeorosiiwonrefsxnonoiwenrstrnernfenienowteverfseeofwiwrteetweofoxseervwteethsivvnoviweowoieerhionvfoosoeowfiwhrsufooirweeewniuunrwsenrxoeoxfeoevnitiztreufxtuoettvoiefioeheineoeetitnnefntxwvixfiiiunexvniewxoniviftfifxivtenhvsftufninnosuoeeoeoionvennneinerieresostostwoovzwohoftreioeoixoxeininessneeetnntetieoieueiwrruieooowfsixeienefexehfuxxnhisosoeevevioinfoexniooefeinivfnviioneinofoeinsffifvesoooeonovtrterhewiisfvnoteutesetuooueiiufhnoitvotisovsieieovtoiwsieueieeosefouitevoertnotfoxonoetrnxoivhixisweoteonreiooffhivfesfwshueriwonowenseveoxftsivefihoeoofnoewtiorofuveofrnsinewvwtesvnrtsitiuouoeexweoenveiwothoowoeowexiioovvenierfxineiwxwxerenoetenieenenninsfineetnfnnsffvetsiitoffsssneseeeevftxoiiorwforznfestunurinvofevoeefenertovefiiofftreiooevxisuseosroeexsefisrsovftihfnsxttuforenoueosnonterounonfssntouieenesurewfieiovtsnoxteweenienuirfvitnonenwoeortnwiseutxestwiwuseetuefeuetwoevorinefnixsiseenstttovewireeooererotfiveoieinfnvvnevwsnsioxtvsnsterxereftnteeoeesfrxwneerfwtenrxifroeenexfonnsxovouiuroefvtofnneioeeessetntewvtxeifhvonewvnrinheneeeoifxwiffheszsnxonwifsfnfeoxxfeoiiefsfoxsxneeuieteveeeseieswoefzeeeofxownfeneeerxnufxextxwwierfiiifwineterwffifriurvoeofvwtrnronfrsrfieotfsseovsusfioexnsrenfnfsiiiwoeeiefifoxnenixnniefiesuxuvifeuwxuosfieosxfhnwfnfvvfexeinnntixwfohsoeenrheueieeeveotnvzoiwuoroxnoefsfovesiifewxxnsztevienvorovfseineofoofsvfooeriniooivessrxwfonwnveeuvsssiewxorsioveintnetetoiifsteeienooonisvnfrnttwieheinfifssorxnovoetonrroeswiutiosiuerwteitfweeroovfserneenofiionfiioteoievzeviieffoesowiwnoxoetssotteeeuvfneixnuzvetntivfrgeuerfxnxnifeftrntirvenefvsuivivnwiwfrvnoixxtrveefisizorrioeeitohesvuefnsotvtfrooowxfvonrovetosxiroeevoifoxfseevnfnoienetoenrsiineoessireoeroiifousfxerftswiievuiwrneisfinwonigfofwoxoiexionieroooetoiveefrwtovsfisexeonrnneiofuvewnusounnoffofvrieizoosnteswnfnofesifteuivnueisivrfxoofrutnitxwwnftxiuwxsouwfooxowiefruosooxiixvtrvotegntiosrveffhroieitxnetnfsiuifesfionevfsfoirefiviffittrwwevturooixfvinevhrtswneetritvteosttesineueoovoiexotufivutuoooofiuvwhfsviuteehoffofewoviwefooeivexuofvhiieienwfuwsehsriuntienrweoivoxvwouevsoifeeoixsnioeoenunofiexrixuexteereoovvurvvoreorftfneoftisesefowswrtfoorrxhifuivoveetfirseixfvituriwvwrreiioifevtixeionwffeeouisotfvfniwnfowrifftvneitooeevsvwwsoifueioxosutronenesnssiritoifffexfrnitetvrxveeufvtserzviseoneroossxrnuitteonnouinxrtiseettefrxvfxfinfoiieeivwrweenwerswxioefeetioivfwewtswvewvinfteeueofioohueseoootoorhufxownexirnoiiifisffiteofhxsreffeotiftiwieoxxevihusffsosrniviuwuxoexerosoievisiioeoetowtxostfrsfeefussoffwithihxtwrfifioououwensrisewesofroefuseresooxsooxvxtsixtosxgxeofieuoovfiwieoxuoenissieoouuifhuvuvwierrrsfosioieiseoioivioeefefonsfvxiifvweoorotuevofvotroresewffuieunseftvoexereofetneuifsxoviettxoxesxrvriesvvvfnwroioifvrhreffxueunentvueeeoivfoweeeeoosufrefrxextifexxfhsutefifwsievihirvsioiiiotffersetieweeioreiirfviefiriseeifvwottfvsweuneffhvfoewtioteoiooerxswioesivfetxeixvsoetexwxsuoorenrvoiortrefifixsfvoervvtrevnonsoovntoiievfrxsoivesvivisrewshuoetennsxexeoiorvgwoouuefvifstfriirveseriooeevvioxrzvtttieifhrohvtirrsiwvrfrosfwxxxfwsextesiriveiseiirsunwoinefwiwsexirusoowwufoesruxiesuvtssvwoufeneifenfwegoiovtvtooixifreeoonshnxwrhorotofewrnfwvenoxwweheshehetxvvneoittisvsewvsiwnwwuofovvwexiofonnfetrivwrftsowrhotroiuerxeiizsoeswxofehuviotenevthoessuofntoterneiowrtooreeivwezooivtvfuwifinisfttrvxvexunerewioretfrtissoevienuievofssueowniewwvovrfeeoxetvissxouxunwueivhewoorrtixseinofiexneentieeooeifetiiexreftfifeieoooeonfoetiihreninfifhtfesfoosisoirtruwfneesuwixxerxiriofiizgxiteixwrofneunvfvffxtrsreexfxirnhrwhsofnwveiiffrxfferifwiwnnxnsutvxffuevoeeerivtfthiiouieweiheeiioneusfenittvofxezrnehxotenehoewwiifiitenwisenvifxveeinitervifrseooiiveesutifrvewxntvneiifnfeoiootesnwutexihefgwniteohhoorfefixsefoexoioewvnveisviihsweofstrsioennfiwisiffixoeeuoisnfoeenusorfofenxowrrwiniifvuefortnrenfwwereetfrfterueeoetxnesieiwioxefteventrorrvieuovoxtffiretioxursnzovovoxtoefenevrrusesehtifnntvovsftuoviuoihvniiivxtoooneoeuufeixfeefxosowfnuetsinitfvsoonxsfxnxetheiuvifeoxosvniiesvifexsxvotouienvhneseofeoitovnuvfsisforwuifteserifrtxohnnoourhffexfoeotvtfsohofooeoxwrwstteinxursftsioesinnrsfrnitfiwieiosefsiooorxnevioieiisoeeuoeoinfuvtfefxwonttnvixorxtoveifenwsnnooovsiefwfieoeeeeneweexohiuefsvtxenrereestiofsofsofnettorzroxsiffewofseoeoxoiitostonvfvsxtverisovtvewwrsetehetwfeiuffniirirteeifrxerrvsgnteosettieiuoeveuwosvftsnwririueeoeeznnoovinwitetnvtvfuwsifieveionfoixrnhefrfefvevotohveievntxxeeuohfsvstterefuefxtoeoruoxxeeioosoevfifnfinosvivoteriivfosuehxtrnoteeiifosovfoentnnstrtsiievoiixooiinfosuvsfoonvxtvuoozouefeieetxhrnxixoxiereoenitefiehetenowviooihfxeeewivioofinftxtowoorneffeeonofoxeeihvniewxuiivrsinvrihftiiiihvotnwfeoonfweeinoriotofiwuxsuiinsieewhwnefeehwisrieenvieeriteiiiroesfeferofvwovfixowfwefevovrfvxeeeootnfrioreititrfvohoitoreiovotvfnnvnseusfxeoeinrotueooeuvxfoeofosxstetxsftonrvtesftfsovexotxronvieifeeueewiervuoeonuesxefienowoonfvntoufvewvietiiioorsnrhnfevefoowoixeefesexsttenwieuttnxoouootfiweofeoooxneutfiveonshxovwioetoisnxftohrusoeouhtfnevhxsfifuesfnihoofwexsovnerweoiezwxeueixiwvfwoeorffeefxrvexenrirviuueiruxovoeneioxuuiiuotttfvtxvsnevsisxftwestffnnsxonofnoifitoeiwintieisevsesgieorxonooxvhofusfuoteofonhvevovsenienoeerfoisffiiuinoeehnenoxtwnxwevwtufteusftvnsntxooesiweostvoerxitoxsnesefunioivnsesvzfofrgsirerefowfnsvvsferiveiofrofwssvneowoehoofiriouefovesvfeuonrwnineseuhfirvtetnivnefxeevwiofrhtenzeivoneinntwxevituostfeiowsweniivitnntooenerssoeriuoeitftfwevxruusuvowurexosvutowrffxoeneswoeifeoiioevehotuwuewnnwwintiuntfontovifffwfofivvenevhrrenfixeieweusevrfzohuovrtisooeexioonorioorvtfnnfteseirtuefestsweouxtxvvnrefwoitiefooveihsnweswnxniewffeexnrnvhsxeenhtizeiitzvivifeefoxwosifwfxeiixwosunttesvvrxrwesxioeeeexferohetoixtvtosereitfnerrwshuonhwoieeiofeeiioieefrfeixhexevnfosestfnnxvnsresowvwnunennietiiwototeunrissouoveitotnewroofeotfoonewfewxifvuefnrnnvseosffexfisetttuvrweovuzittiivtowvoiiofvoeevefxoisnwxneoooiiweeetwfvituofxvttfteweeifnreiisooreitotniwenonetffenvhzteviioinnoioixewnieefuwtfvnireefrfxennooesvuuwnesisvxfxfeoneonfoewoosneoooiiefuxnezxfvvffsteierovoneiunewrfeeiouuwtwooifiernetsooefxifoxeinzrieuieeunrienvnnroeioxvxweonxsennsxeuhzerwseewnoefsinnuxvovswevieuffsexieeewoifoennssioooufniixesensxnftegetnuiieeivfteoervxiinxeinfetsnnetixnewifnvieinnotroerwfessuooiewfrtooxofetivrnsohosoeseweseffnrxsneeintrfneoieioeixwneervvxxitewufiieeniieftsffisefooitxeteeenurvieefhieorneivvheunewevfxuoonfseffofrfnnfxwxsueffnirsiftirnfiwonoonoieonzeivheivfsxuoeerrtoiooeeszvweitnevstrxfeurtsrooevfiseonhnetnnxoinfeeixtvtrfrziieeenineevenftwirnixwuenwenteiiieufoffounfesfehuxiveinoifiofwfeiiexnfixivnetoixrieiueeeofoowteenrtoxunoenffisnefivvnosfvwewwexvoveovitrvnxoofnireovvfeeihierexntihinresexwnontteexrveeefeoneissswwfnsooisxevwfiivosonuusuowenusoennowiersorirrefufixueewofoeerioevnoinvietfnifxvsssnntoxeeeteniiiiehoefixnereiioefeoufifieesioseveviinwriiosoiuivesrnrwwsxoeiiiotnxnevsxrusoeeefiori" +
+                "hsoewxoifeuietexsweixfifowsefeifofowtfnevnfhvfotwsnevwifon";
+//     String s = "ereht";
+
+        long startTime = System.currentTimeMillis();
+        String result = originalDigits1(s);
+        long endTime = System.currentTimeMillis();
+        System.out.println("result : " + result);
+        System.out.println("running time : " + (endTime - startTime));
+    }
+}
